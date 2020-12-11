@@ -45,10 +45,11 @@ void load_file(bool verbose) {
     while (getline(infile, line)) {
         cpu = io = 0;
         if (line.empty()) continue;
-        istringstream ss(line);
+        //istringstream ss(line);
         if(numbers == 0) { //first process input
+            //cout<<"????"<<endl;
            process temp;
-           ss >> id >> arrival >> numbers;
+           infile >> id >> arrival >> numbers;
            temp.p_id=id;
            temp.arrivalT = arrival;
            temp.numOfCPU = numbers;
@@ -58,16 +59,16 @@ void load_file(bool verbose) {
             << " with " << numbers << " CPU bursts.\n";
            continue;
        }
-       // if (numbers == counter) {
-       //     processes.push_back(p1);
-       //     process temp;
-       //     ss >> id >> arrival >> numbers;
-       //     temp.p_id=id;
-       //     temp.arrivalT = arrival;
-       //     temp.numOfCPU = numbers;
-       //     p1 = temp;
-       //     counter=0;
-       // }
+        if (numbers == counter) {
+            processes.push_back(p1);
+            process temp;
+            ss >> id >> arrival >> numbers;
+            temp.p_id=id;
+            temp.arrivalT = arrival;
+            temp.numOfCPU = numbers;
+            p1 = temp;
+            counter=0;
+        }
        // else {
        //     ss >> cnum >> cpu >> io;
        //     p1.insertCPU_IO(cpu, io);
