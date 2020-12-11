@@ -9,6 +9,8 @@
 
 using namespace std;
 
+void check_arguments(bool&, bool&, int, char**, bool&, bool&, bool&, bool&);
+
 const string stauts[] = { "new", "read","wait","run","execute" }; // 0 1 2 3 4
 
 struct process {
@@ -77,6 +79,17 @@ void fcfs(vector<process>, int);
 void sjf(vector<process>, int);
 
 int main(int argc, char** argv) {
+
+    bool verbose = false;
+    bool detail_output = false;
+
+    bool FCFS = false;
+    bool SJF = false;
+    bool SRTN = false;
+    bool RR = false;
+
+    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR);
+
     int totalJobs=0, overheads=0;
     int id, arrival, numbers=0;
     load_file();
@@ -300,6 +313,42 @@ void sjf(vector<process>processes, int totalJobs){
     }
     summary(algName,current, idletime);
 }
+
+void check_arguments(bool& v, bool& d, int argc, char** argv, 
+    bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
+
+    string argument;
+
+    for (int i = 1; i < argc; ++i) {
+        if (argv[i][0] == '-') {
+            if (argv[i][1] == 'v') {
+                v = true;
+            } 
+        if (argv[i][1] == 'd') {
+                d = true;
+            }
+        }
+        argument = argv[i];
+        if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
+        if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
+        if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
+        if (argument == "RR"   || argument == "rr")   {RR = true;}
+    }
+    if (
+        FCFS == false &&
+        SJF == false &&
+        SRTN == false &&
+        RR == false 
+        ) {
+        FCFS = true;
+        SJF = true;
+        SRTN = true;
+        RR = true; 
+        // if all false, assume user is unfamiliar 
+        // and want to see all output
+    }
+}
+
 //void detail(){
 //    //calculate TAT and cpu utilization and idle time
 //    int totalTat = 0, totalWait=0;
