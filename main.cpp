@@ -15,6 +15,13 @@ using namespace std;
 
 const string stauts[] = { "new", "read","wait","run","execute" }; // 0 1 2 3 4
 
+struct burst {
+    int cpu_burst;
+    int io_burst;
+    int cpu_remaining;
+    int io_remaining;
+};
+
 struct process {
     int p_id;
     int numOfCPU;
@@ -28,6 +35,8 @@ struct process {
     int io_burst;
     int *cpuList;
     int *ioList;
+
+    list <burst> burstList;
 };
 
 
@@ -139,7 +148,7 @@ void fcfs(queue<process>& processes, bool verbose){ //nesting loops
 
    copy.sort();
 
-   queue <process> readyQ;
+   queue <process> readyQ, waitQ;
 
   while (time <= 100000) {
     while(!copy.empty()) {
@@ -152,6 +161,10 @@ void fcfs(queue<process>& processes, bool verbose){ //nesting loops
         continue;
       } else break;
     } // above loop: push processes into ready queue from new arriving processes
+
+    temp = readyQ.front();
+    
+
 
     time++;
   } // top while loop
