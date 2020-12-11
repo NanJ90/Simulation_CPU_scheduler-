@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <queue>
 #include <list>
+#include <iterator>
 #include "functions.h"
 
 using namespace std;
@@ -30,7 +31,7 @@ struct process {
 };
 
 
-void load_file(bool verbose) {
+void load_file(queue<process>& processes, bool verbose) {
     int id, arrival, numbers=0;
     int totalJobs,overheads;
     ifstream infile;
@@ -39,7 +40,7 @@ void load_file(bool verbose) {
     infile >> totalJobs >> overheads;
     if (verbose) cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
     
-    queue <process> processes;
+    // queue <process> processes;
 
     int cnum, cpu, io; string line;
 
@@ -117,6 +118,129 @@ void load_file(bool verbose) {
 //void fcfs(vector<process>, int);
 //void sjf(vector<process>, int);
 
+/*------FCFS*--------*/
+
+bool operator<(process const & lhs, process const & rhs) {return lhs.arrivalT < rhs.arrivalT;}
+
+void fcfs(queue<process>& processes, bool verbose){ //nesting loops
+   string algName = "First come first serve";
+   // sorting process in processes by arrvial time in ready Q
+
+   int time = 0;
+
+   list<process> copy;
+   process temp;
+
+   while (!processes.empty()) {
+    temp = processes.front();
+    copy.push_back(temp);
+    processes.pop();
+   }
+
+   copy.sort();
+
+   queue <process> readyQ;
+
+  while (time <= 100000) {
+    while(!copy.empty()) {
+      if (copy.front().arrivalT <= time) {
+        temp = copy.front();
+        readyQ.push(temp);
+        if (verbose) cout << "At time: " << time << ", pushed process "
+          << temp.p_id << " into readyQ.\n";
+        copy.pop_front();
+        continue;
+      } else break;
+    } // above loop: push processes into ready queue from new arriving processes
+
+    time++;
+  } // top while loop
+
+
+    // list <process> :: iterator it; 
+    // for(it = copy.begin(); it != copy.end(); ++it) 
+    //     cout << '\t' << it->p_id; 
+    // cout << '\n'; 
+
+
+
+   // while (1) { 
+   //  while (!processes.empty()) {
+
+   //  }
+
+   //      for (int j = 0; j < n; j++) { 
+   //          if ((proc[j].art <= t) && 
+   //          (rt[j] < minm) && rt[j] > 0) { 
+   //              minm = rt[j]; 
+   //              shortest = j; 
+   //              check = true; 
+   //          } 
+   //      }
+   // queue <process> readyQ, waitQ;
+   // readyQ = processes;
+   // sort(readyQ.begin(), readyQ.end(), compareArrival());
+
+   // for (int i = 0; i < totalJobs; i++) {
+   //     readyQ[i].status = 1;
+   // }
+   // int cTime = readyQ[0].arrivalT;
+   // int iTime = readyQ[0].arrivalT;
+   // int current = 0;
+   // int idletime = 0;
+   // //int overheadsCount = 0;
+   // while (readyQ[0].status == 1 && !readyQ.empty()) {//io burst and empty conflicts
+   //     //if(readyQ[0].currentC == readyQ[0].numOfCPU) continue;
+   //     if(readyQ[0].arrivalT > current) {
+   //         idletime += readyQ[0].arrivalT- cTime;
+   //         cTime = readyQ[0].arrivalT;
+   //     }
+
+   //     int i = readyQ[0].currentC;
+   //     readyQ[0].status = 3;
+   //     cTime += readyQ[0].cpuList[i].burstT;
+   //     current = cTime;
+   //     iTime = current + readyQ[0].ioList[i].burstT;
+   //     readyQ[0].cputime = cTime;
+   //     readyQ[0].iotime = iTime;
+   //     readyQ[0].status = 2;
+
+   //     i++; //update cpu counter in a process
+   //     readyQ[0].currentC = i;
+   //     if (readyQ[0].currentC == readyQ[0].numOfCPU) {//process completed
+   //         readyQ[0].status = 4; //prcess completed
+   //         readyQ[0].finishT = current;
+   //         readyQ[0].tatT = readyQ[0].finishT - readyQ[0].arrivalT;
+   //         readyQ[0].wait = readyQ[0].tatT - readyQ[0].serviceT-readyQ[0].iotimeB;
+   //         executeArr.push_back(readyQ[0]);
+
+   //         readyQ.erase(readyQ.begin());
+   //         sort(readyQ.begin(), readyQ.end(),compareJobsTio);
+   //         readyQ[0].status = 1;
+   //         if(cTime < readyQ[0].iotime) {
+   //             cTime = readyQ[0].iotime;
+   //             idletime+=readyQ[0].iotime - current;
+   //         }
+   //         continue;
+   //     }
+   //     if (cTime < readyQ[1].iotime) {
+   //         sort(readyQ.begin(), readyQ.end(), compareJobsTio);
+   //         //overheadsCount++;
+   //         idletime += readyQ[0].iotime - current;
+   //         cTime = readyQ[0].iotime;
+   //         readyQ[0].status = 1;
+   //         //readyQ[0].idle = true;
+
+   //     }
+   //     else {
+   //         readyQ[1].status = 1;
+   //         rotate(readyQ.begin(), readyQ.begin() + 1, readyQ.end());
+   //         //overheadsCount++;
+   //     }
+   // }
+   // summary(algName,current,idletime);
+}
+
 int main(int argc, char** argv) {
 
     bool verbose = false;
@@ -129,12 +253,14 @@ int main(int argc, char** argv) {
 
     check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR);
 
-    int totalJobs=0, overheads=0;
+    // int totalJobs=0, overheads=0;
     int id, arrival, numbers=0;
-    load_file(verbose);
-    
 
-//    fcfs(processes,totalJobs);
+    queue <process> processes;
+    load_file(processes, verbose);
+
+    fcfs(processes, verbose);
+
 //    sjf(processes,totalJobs);
 //    /*------SRTN------*/
 //    vector<process> ready;
@@ -169,73 +295,7 @@ int main(int argc, char** argv) {
 //    cout<<"Total time required is " << current << " time units"<<endl;
 //    cout<< "the cpu utilization is "<< (int)cpuUtilization<<"%"<<endl<<endl;
 //}
-/*------FCFS*--------*/
-//void fcfs(vector<process>processes, int totalJobs){ //nesting loops
-//    string algName = "First come first serve";
-//    //sorting process in processes by arrvial time in ready Q
-//    vector<process> readyQ, executeArr;
-//    readyQ = processes;
-//    sort(readyQ.begin(), readyQ.end(), compareArrival());
-//
-//    for (int i = 0; i < totalJobs; i++) {
-//        readyQ[i].status = 1;
-//    }
-//    int cTime = readyQ[0].arrivalT;
-//    int iTime = readyQ[0].arrivalT;
-//    int current = 0;
-//    int idletime = 0;
-//    //int overheadsCount = 0;
-//    while (readyQ[0].status == 1 && !readyQ.empty()) {//io burst and empty conflicts
-//        //if(readyQ[0].currentC == readyQ[0].numOfCPU) continue;
-//        if(readyQ[0].arrivalT > current) {
-//            idletime += readyQ[0].arrivalT- cTime;
-//            cTime = readyQ[0].arrivalT;
-//        }
-//
-//        int i = readyQ[0].currentC;
-//        readyQ[0].status = 3;
-//        cTime += readyQ[0].cpuList[i].burstT;
-//        current = cTime;
-//        iTime = current + readyQ[0].ioList[i].burstT;
-//        readyQ[0].cputime = cTime;
-//        readyQ[0].iotime = iTime;
-//        readyQ[0].status = 2;
-//
-//        i++; //update cpu counter in a process
-//        readyQ[0].currentC = i;
-//        if (readyQ[0].currentC == readyQ[0].numOfCPU) {//process completed
-//            readyQ[0].status = 4; //prcess completed
-//            readyQ[0].finishT = current;
-//            readyQ[0].tatT = readyQ[0].finishT - readyQ[0].arrivalT;
-//            readyQ[0].wait = readyQ[0].tatT - readyQ[0].serviceT-readyQ[0].iotimeB;
-//            executeArr.push_back(readyQ[0]);
-//
-//            readyQ.erase(readyQ.begin());
-//            sort(readyQ.begin(), readyQ.end(),compareJobsTio);
-//            readyQ[0].status = 1;
-//            if(cTime < readyQ[0].iotime) {
-//                cTime = readyQ[0].iotime;
-//                idletime+=readyQ[0].iotime - current;
-//            }
-//            continue;
-//        }
-//        if (cTime < readyQ[1].iotime) {
-//            sort(readyQ.begin(), readyQ.end(), compareJobsTio);
-//            //overheadsCount++;
-//            idletime += readyQ[0].iotime - current;
-//            cTime = readyQ[0].iotime;
-//            readyQ[0].status = 1;
-//            //readyQ[0].idle = true;
-//
-//        }
-//        else {
-//            readyQ[1].status = 1;
-//            rotate(readyQ.begin(), readyQ.begin() + 1, readyQ.end());
-//            //overheadsCount++;
-//        }
-//    }
-//    summary(algName,current,idletime);
-//}
+
 ///*------SJF*--------*/
 //void sjf(vector<process>processes, int totalJobs){
 //    string algName = "Shortest Job First";
@@ -306,40 +366,6 @@ int main(int argc, char** argv) {
 //    summary(algName,current, idletime);
 //}
 
-// void check_arguments(bool& v, bool& d, int argc, char** argv,
-//    bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
-
-//    string argument;
-
-//    for (int i = 1; i < argc; ++i) {
-//        if (argv[i][0] == '-') {
-//            if (argv[i][1] == 'v') {
-//                v = true;
-//            }
-//        if (argv[i][1] == 'd') {
-//                d = true;
-//            }
-//        }
-//        argument = argv[i];
-//        if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
-//        if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
-//        if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
-//        if (argument == "RR"   || argument == "rr")   {RR = true;}
-//    }
-//    if (
-//        FCFS == false &&
-//        SJF == false &&
-//        SRTN == false &&
-//        RR == false
-//        ) {
-//        FCFS = true;
-//        SJF = true;
-//        SRTN = true;
-//        RR = true;
-//        // if all false, assume user is unfamiliar
-//        // and want to see all output
-//    }
-// }
 
 //void detail(){
 //    //calculate TAT and cpu utilization and idle time
