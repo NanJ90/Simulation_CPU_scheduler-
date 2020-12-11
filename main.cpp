@@ -4,73 +4,52 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <queue>
+#include <list>
 
 using namespace std;
 
 const string stauts[] = { "new", "read","wait","run","execute" }; // 0 1 2 3 4
 
-struct CPU {
-    bool finish;
-    int burstT;
-    //int remainT;
-};
-
-struct I_O {
-    bool isio;
-    int burstT;
-    //int remainT;
-};
-
-class process {
-    
-public:
+struct process {
     int p_id;
     int numOfCPU;
     int arrivalT;
-    //int remainio;
     int finishT;
-    int status;
-    int wait;
     int serviceT;
-    int iotimeB;
     int tatT;
-    int currentC;
-    bool idle;
-    int iotime;
-    int cputime;
-    vector<CPU> cpuList;
-    vector<I_O> ioList;
-    process(){};
-    process(int i, int arr, int counter) {
-        p_id = i;
-        arrivalT = arr;
-        numOfCPU = counter;
-        currentC = 0;
-        status = 0; // 0 is new
-        idle = false;
-        iotime = 0;
-        cputime = 0;
-    }
-   
-    void insertCPU_IO(int cpu, int io) {
-        CPU newcpu; I_O newio;
-        newcpu.burstT = cpu;
-        newio.burstT = io;
-        cpuList.push_back(newcpu);
-        ioList.push_back(newio);
-    }
-    int getpid() {
-        return p_id;
-    }
-    void display() {
-        cout << "The is process has  " << p_id << " " << numOfCPU << " " << arrivalT << endl;
-        cout << "process " << p_id << "has cpu and io " << endl;
-        for (int i = 0; i < numOfCPU; i++) {
-            cout << cpuList[i].burstT << " " << ioList[i].burstT << endl;
-        }
-    }
-    ~process() {};
+    int cpu_position;
+    int io_position;
+    int cpu_burst;
+    int io_burst
+    int *cpuList;
+    int *ioList;
 };
+
+
+void load_file() {
+    int id, arrival, numbers=0;
+
+    ifstream infile;
+    infile.open("exampleinput.txt");
+
+    infile >> totalJobs >> overheads;
+    cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
+
+//    CPU newcpu; I_O newio;
+//    newcpu.burstT = cpu;
+//    newio.burstT = io;
+//    cpuList.push_back(newcpu);
+//    ioList.push_back(newio);
+}
+void display() {
+    cout << "The is process has  " << p_id << " " << numOfCPU << " " << arrivalT << endl;
+    cout << "process " << p_id << "has cpu and io " << endl;
+    for (int i = 0; i < numOfCPU; i++) {
+        cout << cpuList[i].burstT << " " << ioList[i].burstT << endl;
+    }
+}
+~process() {};
 
 struct compareArrival
 {
@@ -100,58 +79,58 @@ void sjf(vector<process>, int);
 int main(int argc, char** argv) {
     int totalJobs=0, overheads=0;
     int id, arrival, numbers=0;
+    load_file();
+//    ifstream infile;
+//    infile.open("inData.txt");
+//
+//    infile >> totalJobs >> overheads;
+//    cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
 
-    ifstream infile;
-    infile.open("inData.txt");
-
-    infile >> totalJobs >> overheads;
-    cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
-
-    int cnum, cpu, io, counter = 0;
-
-    string line;
-    vector<process> processes;
-
-    process p1;
-    while (getline(infile, line)) {
-        cpu = io = 0;
-        if (line.empty()) continue;
-        istringstream ss(line);
-        if(numbers == 0) { //first process input
-            process temp;
-            ss >> id >> arrival >> numbers;
-            temp.p_id=id;
-            temp.arrivalT = arrival;
-            temp.numOfCPU = numbers;
-            p1 = temp;
-            continue;
-        }
-        if (numbers == counter) {
-            processes.push_back(p1);
-            process temp;
-            ss >> id >> arrival >> numbers;
-            temp.p_id=id;
-            temp.arrivalT = arrival;
-            temp.numOfCPU = numbers;
-            p1 = temp;
-            counter=0;
-        }
-        else {
-            ss >> cnum >> cpu >> io;
-            p1.insertCPU_IO(cpu, io);
-            counter++;
-            //cout<< cnum<<" "<<cpu << " "<<io<<endl;
-        }
-    }
-    processes.push_back(p1);
-    for(int i = 0;i<totalJobs;i++){
-        for(int j = 0;j<processes[i].numOfCPU;j++){
-            processes[i].serviceT += processes[i].cpuList[j].burstT;
-            processes[i].iotimeB += processes[i].ioList[j].burstT;
-        }
-    }
-    fcfs(processes,totalJobs);
-    sjf(processes,totalJobs);
+//    int cnum, cpu, io, counter = 0;
+//
+//    string line;
+//    vector<process> processes;
+//
+//    process p1;
+//    while (getline(infile, line)) {
+//        cpu = io = 0;
+//        if (line.empty()) continue;
+//        istringstream ss(line);
+//        if(numbers == 0) { //first process input
+//            process temp;
+//            ss >> id >> arrival >> numbers;
+//            temp.p_id=id;
+//            temp.arrivalT = arrival;
+//            temp.numOfCPU = numbers;
+//            p1 = temp;
+//            continue;
+//        }
+//        if (numbers == counter) {
+//            processes.push_back(p1);
+//            process temp;
+//            ss >> id >> arrival >> numbers;
+//            temp.p_id=id;
+//            temp.arrivalT = arrival;
+//            temp.numOfCPU = numbers;
+//            p1 = temp;
+//            counter=0;
+//        }
+//        else {
+//            ss >> cnum >> cpu >> io;
+//            p1.insertCPU_IO(cpu, io);
+//            counter++;
+//            //cout<< cnum<<" "<<cpu << " "<<io<<endl;
+//        }
+//    }
+//    processes.push_back(p1);
+//    for(int i = 0;i<totalJobs;i++){
+//        for(int j = 0;j<processes[i].numOfCPU;j++){
+//            processes[i].serviceT += processes[i].cpuList[j].burstT;
+//            processes[i].iotimeB += processes[i].ioList[j].burstT;
+//        }
+//    }
+//    fcfs(processes,totalJobs);
+//    sjf(processes,totalJobs);
 //    /*------SRTN------*/
 //    vector<process> ready;
 //    ready = processes;
