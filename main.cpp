@@ -33,11 +33,11 @@ void load_file() {
     int id, arrival, numbers=0;
     int totalJobs,overheads;
     ifstream infile;
-    infile.open("exampleinput.txt");
+    infile.open("exampleData.txt");
 
     infile >> totalJobs >> overheads;
     cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
-
+    
 //    CPU newcpu; I_O newio;
 //    newcpu.burstT = cpu;
 //    newio.burstT = io;
