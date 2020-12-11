@@ -40,58 +40,48 @@ void load_file(bool verbose) {
     
     queue <process> processes;
 
-    process p1; int cpu, io; string line;
+    int cnum, cpu, io; string line;
 
-    while (getline(infile, line)) {
-        cpu = io = 0;
-        if (line.empty()) continue;
-        //istringstream ss(line);
-        if(numbers == 0) { //first process input
-            //cout<<"????"<<endl;
-           process temp;
-           infile >> id >> arrival >> numbers;
-           temp.p_id=id;
-           temp.arrivalT = arrival;
-           temp.numOfCPU = numbers;
-           p1 = temp;
-           if (verbose) cout << "We got process " << id 
-            << " at arrived at time " << arrival 
-            << " with " << numbers << " CPU bursts.\n";
-           continue;
-       }
-       // for (int i = 0; i < numbers; ++i) {
-       //    processes.push(p1)
-       // }
-        // if (numbers == counter) {
-        //     processes.push_back(p1);
-        //     process temp;
-        //     ss >> id >> arrival >> numbers;
-        //     temp.p_id=id;
-        //     temp.arrivalT = arrival;
-        //     temp.numOfCPU = numbers;
-        //     p1 = temp;
-        //     counter=0;
-        // }
-       // else {
-       //     ss >> cnum >> cpu >> io;
-       //     p1.insertCPU_IO(cpu, io);
-       //     counter++;
-       //     //cout<< cnum<<" "<<cpu << " "<<io<<endl;
-       // }
-   }
-//    processes.push_back(p1);
-//    for(int i = 0;i<totalJobs;i++){
-//        for(int j = 0;j<processes[i].numOfCPU;j++){
-//            processes[i].serviceT += processes[i].cpuList[j].burstT;
-//            processes[i].iotimeB += processes[i].ioList[j].burstT;
-//        }
-//    }    
-    // CPU newcpu; I_O newio;
-//    newcpu.burstT = cpu;
-//    newio.burstT = io;
-//    cpuList.push_back(newcpu);
-//    ioList.push_back(newio);
+    for(int i =0;i<totalJobs;i++){
+        process p1;
+        infile >> id >> arrival >> numbers;
+        p1.p_id = id;
+        p1.arrivalT = arrival;
+        p1.numOfCPU = numbers;
+        p1.cpuList = new int[p1.numOfCPU];
+        p1.ioList = new int[p1.numOfCPU-1];
+        if(verbose) cout<<"Process "<<p1.p_id<<" is arrived at "<<p1.arrivalT<<" with "<<p1.numOfCPU<<endl;
+        for(int i = 0; i< p1.numOfCPU;i++) {// initialize cpu burst array
+            p1.cpuList[i] = 0;
+        }
+        for(int i = 0; i< p1.numOfCPU-1;i++) {// initialize io burst array
+            p1.ioList[i] = 0;
+        }
+        
+        for(int j =0;j<p1.numOfCPU;j++){
+            if(j == p1.numOfCPU-1) {//for last cpu burst and no io burst
+                infile >> cnum >> cpu;
+                p1.ioList[j] = 0;
+            }
+            else{
+                infile >> cnum >> cpu >> io;
+                p1.ioList[j] = io;
+            }
+            p1.cpuList[j] = cpu;
+        }
+        p1.cpu_position = 0;
+        p1.io_position = 0;
+        processes.push(p1);
+    }
     infile.close();
+//    while(!processes.empty()){//testing processes adding to the queue
+//        int i = 0;
+//        while (i < processes.front().numOfCPU){
+//            cout << processes.front().cpuList[i]<<endl;
+//            i++;
+//        }
+//        processes.pop();
+//    }
 }
 //void display() {
 //    cout << "The is process has  " << p_id << " " << numOfCPU << " " << arrivalT << endl;
@@ -141,15 +131,7 @@ int main(int argc, char** argv) {
     int totalJobs=0, overheads=0;
     int id, arrival, numbers=0;
     load_file(verbose);
-//    ifstream infile;
-//    infile.open("inData.txt");
-//
-//    infile >> totalJobs >> overheads;
-//    cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
-
-//    int cnum, cpu, io, counter = 0;
-//
-//    string line;
+    
 
 //    fcfs(processes,totalJobs);
 //    sjf(processes,totalJobs);
