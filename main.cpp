@@ -61,7 +61,9 @@ void load_file(queue<process>& processes, bool verbose) {
         p1.numOfCPU = numbers;
         p1.cpuList = new int[p1.numOfCPU];
         p1.ioList = new int[p1.numOfCPU-1];
-        if(verbose) cout<<"Process "<<p1.p_id<<" is arrived at "<<p1.arrivalT<<" with "<<p1.numOfCPU<<endl;
+        if(verbose) cout<<"Loaded process "<<p1.p_id<<" with arrival "<<p1.arrivalT
+          <<" and "<< p1.numOfCPU
+          << " number of bursts from file." << endl;
         for(int i = 0; i< p1.numOfCPU;i++) {// initialize cpu burst array
             p1.cpuList[i] = 0;
         }
@@ -132,23 +134,26 @@ void load_file(queue<process>& processes, bool verbose) {
 bool operator<(process const & lhs, process const & rhs) {return lhs.arrivalT < rhs.arrivalT;}
 
 void fcfs(queue<process>& processes, bool verbose){ //nesting loops
-   string algName = "First come first serve";
-   // sorting process in processes by arrvial time in ready Q
 
-   int time = 0;
+  string algName = "First come first serve";
+  
+  int time = 0;
 
-   list<process> copy;
-   process temp;
-
-   while (!processes.empty()) {
+  list<process> copy;
+  process temp;
+  
+  while (!processes.empty()) {
     temp = processes.front();
     copy.push_back(temp);
     processes.pop();
-   }
+  }
 
-   copy.sort();
+  copy.sort();
 
-   queue <process> readyQ, waitQ;
+  queue <process> readyQ, waitQ;
+
+  bool cpu_idle = true;
+  process running;
 
   while (time <= 100000) {
     while(!copy.empty()) {
@@ -161,97 +166,37 @@ void fcfs(queue<process>& processes, bool verbose){ //nesting loops
         continue;
       } else break;
     } // above loop: push processes into ready queue from new arriving processes
-
-    temp = readyQ.front();
     
+  if (cpu_idle) {
+    if (!readyQ.empty()) { 
+      running = readyQ.front(); readyQ.pop();
+      if (verbose) cout << "At time: " << time 
+        << ", started running process " << running.p_id <<".\n";
+      cpu_idle = false;
+    } 
+  } // if cpu_idle 
 
+  time++;
 
-    time++;
-  } // top while loop
+  // if (!cpu_idle) {
+  //   running.cpuList[running.cpu_position]--;
+  //   if (running.cpuList[running.cpu_position] == 0) {
+  //     running.cpu_position++;
+  //     if (running.numOfCPU == running.cpu_position) {
+  //       if (verbose) cout << "At time: " << time
+  //         << "Process " << running.p_id 
+  //         << " finished.\n";
+  //       cpu_idle = true;
+  //     } // if (running.numOfCPU == running.cpu_position)
+  //     else {
 
+  //     }
+  //   } // if (running.cpuList[running.cpu_position] == 0) 
+  // } // if !cpu_idle
 
-    // list <process> :: iterator it; 
-    // for(it = copy.begin(); it != copy.end(); ++it) 
-    //     cout << '\t' << it->p_id; 
-    // cout << '\n'; 
+  
 
-
-
-   // while (1) { 
-   //  while (!processes.empty()) {
-
-   //  }
-
-   //      for (int j = 0; j < n; j++) { 
-   //          if ((proc[j].art <= t) && 
-   //          (rt[j] < minm) && rt[j] > 0) { 
-   //              minm = rt[j]; 
-   //              shortest = j; 
-   //              check = true; 
-   //          } 
-   //      }
-   // queue <process> readyQ, waitQ;
-   // readyQ = processes;
-   // sort(readyQ.begin(), readyQ.end(), compareArrival());
-
-   // for (int i = 0; i < totalJobs; i++) {
-   //     readyQ[i].status = 1;
-   // }
-   // int cTime = readyQ[0].arrivalT;
-   // int iTime = readyQ[0].arrivalT;
-   // int current = 0;
-   // int idletime = 0;
-   // //int overheadsCount = 0;
-   // while (readyQ[0].status == 1 && !readyQ.empty()) {//io burst and empty conflicts
-   //     //if(readyQ[0].currentC == readyQ[0].numOfCPU) continue;
-   //     if(readyQ[0].arrivalT > current) {
-   //         idletime += readyQ[0].arrivalT- cTime;
-   //         cTime = readyQ[0].arrivalT;
-   //     }
-
-   //     int i = readyQ[0].currentC;
-   //     readyQ[0].status = 3;
-   //     cTime += readyQ[0].cpuList[i].burstT;
-   //     current = cTime;
-   //     iTime = current + readyQ[0].ioList[i].burstT;
-   //     readyQ[0].cputime = cTime;
-   //     readyQ[0].iotime = iTime;
-   //     readyQ[0].status = 2;
-
-   //     i++; //update cpu counter in a process
-   //     readyQ[0].currentC = i;
-   //     if (readyQ[0].currentC == readyQ[0].numOfCPU) {//process completed
-   //         readyQ[0].status = 4; //prcess completed
-   //         readyQ[0].finishT = current;
-   //         readyQ[0].tatT = readyQ[0].finishT - readyQ[0].arrivalT;
-   //         readyQ[0].wait = readyQ[0].tatT - readyQ[0].serviceT-readyQ[0].iotimeB;
-   //         executeArr.push_back(readyQ[0]);
-
-   //         readyQ.erase(readyQ.begin());
-   //         sort(readyQ.begin(), readyQ.end(),compareJobsTio);
-   //         readyQ[0].status = 1;
-   //         if(cTime < readyQ[0].iotime) {
-   //             cTime = readyQ[0].iotime;
-   //             idletime+=readyQ[0].iotime - current;
-   //         }
-   //         continue;
-   //     }
-   //     if (cTime < readyQ[1].iotime) {
-   //         sort(readyQ.begin(), readyQ.end(), compareJobsTio);
-   //         //overheadsCount++;
-   //         idletime += readyQ[0].iotime - current;
-   //         cTime = readyQ[0].iotime;
-   //         readyQ[0].status = 1;
-   //         //readyQ[0].idle = true;
-
-   //     }
-   //     else {
-   //         readyQ[1].status = 1;
-   //         rotate(readyQ.begin(), readyQ.begin() + 1, readyQ.end());
-   //         //overheadsCount++;
-   //     }
-   // }
-   // summary(algName,current,idletime);
+  } 
 }
 
 int main(int argc, char** argv) {
