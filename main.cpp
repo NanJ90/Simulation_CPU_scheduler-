@@ -29,16 +29,60 @@ struct process {
 };
 
 
-void load_file() {
+void load_file(bool verbose) {
     int id, arrival, numbers=0;
     int totalJobs,overheads;
     ifstream infile;
     infile.open("exampleData.txt");
 
     infile >> totalJobs >> overheads;
-    cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
+    if (verbose) cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
     
-//    CPU newcpu; I_O newio;
+    queue <process> processes;
+
+    process p1; int cpu, io; string line;
+
+    while (getline(infile, line)) {
+        cpu = io = 0;
+        if (line.empty()) continue;
+        istringstream ss(line);
+        if(numbers == 0) { //first process input
+           process temp;
+           ss >> id >> arrival >> numbers;
+           temp.p_id=id;
+           temp.arrivalT = arrival;
+           temp.numOfCPU = numbers;
+           p1 = temp;
+           if (verbose) cout << "We got process " << id 
+            << " at arrived at time " << arrival 
+            << " with " << numbers << " CPU bursts.\n";
+           continue;
+       }
+       // if (numbers == counter) {
+       //     processes.push_back(p1);
+       //     process temp;
+       //     ss >> id >> arrival >> numbers;
+       //     temp.p_id=id;
+       //     temp.arrivalT = arrival;
+       //     temp.numOfCPU = numbers;
+       //     p1 = temp;
+       //     counter=0;
+       // }
+       // else {
+       //     ss >> cnum >> cpu >> io;
+       //     p1.insertCPU_IO(cpu, io);
+       //     counter++;
+       //     //cout<< cnum<<" "<<cpu << " "<<io<<endl;
+       // }
+   }
+//    processes.push_back(p1);
+//    for(int i = 0;i<totalJobs;i++){
+//        for(int j = 0;j<processes[i].numOfCPU;j++){
+//            processes[i].serviceT += processes[i].cpuList[j].burstT;
+//            processes[i].iotimeB += processes[i].ioList[j].burstT;
+//        }
+//    }    
+    // CPU newcpu; I_O newio;
 //    newcpu.burstT = cpu;
 //    newio.burstT = io;
 //    cpuList.push_back(newcpu);
@@ -88,11 +132,11 @@ int main(int argc, char** argv) {
     bool SRTN = false;
     bool RR = false;
 
-    //check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR);
+    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR);
 
     int totalJobs=0, overheads=0;
     int id, arrival, numbers=0;
-    load_file();
+    load_file(verbose);
 //    ifstream infile;
 //    infile.open("inData.txt");
 //
@@ -102,46 +146,7 @@ int main(int argc, char** argv) {
 //    int cnum, cpu, io, counter = 0;
 //
 //    string line;
-//    vector<process> processes;
-//
-//    process p1;
-//    while (getline(infile, line)) {
-//        cpu = io = 0;
-//        if (line.empty()) continue;
-//        istringstream ss(line);
-//        if(numbers == 0) { //first process input
-//            process temp;
-//            ss >> id >> arrival >> numbers;
-//            temp.p_id=id;
-//            temp.arrivalT = arrival;
-//            temp.numOfCPU = numbers;
-//            p1 = temp;
-//            continue;
-//        }
-//        if (numbers == counter) {
-//            processes.push_back(p1);
-//            process temp;
-//            ss >> id >> arrival >> numbers;
-//            temp.p_id=id;
-//            temp.arrivalT = arrival;
-//            temp.numOfCPU = numbers;
-//            p1 = temp;
-//            counter=0;
-//        }
-//        else {
-//            ss >> cnum >> cpu >> io;
-//            p1.insertCPU_IO(cpu, io);
-//            counter++;
-//            //cout<< cnum<<" "<<cpu << " "<<io<<endl;
-//        }
-//    }
-//    processes.push_back(p1);
-//    for(int i = 0;i<totalJobs;i++){
-//        for(int j = 0;j<processes[i].numOfCPU;j++){
-//            processes[i].serviceT += processes[i].cpuList[j].burstT;
-//            processes[i].iotimeB += processes[i].ioList[j].burstT;
-//        }
-//    }
+
 //    fcfs(processes,totalJobs);
 //    sjf(processes,totalJobs);
 //    /*------SRTN------*/
@@ -314,40 +319,40 @@ int main(int argc, char** argv) {
 //    summary(algName,current, idletime);
 //}
 
-//void check_arguments(bool& v, bool& d, int argc, char** argv,
-//    bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
-//
-//    string argument;
-//
-//    for (int i = 1; i < argc; ++i) {
-//        if (argv[i][0] == '-') {
-//            if (argv[i][1] == 'v') {
-//                v = true;
-//            }
-//        if (argv[i][1] == 'd') {
-//                d = true;
-//            }
-//        }
-//        argument = argv[i];
-//        if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
-//        if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
-//        if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
-//        if (argument == "RR"   || argument == "rr")   {RR = true;}
-//    }
-//    if (
-//        FCFS == false &&
-//        SJF == false &&
-//        SRTN == false &&
-//        RR == false
-//        ) {
-//        FCFS = true;
-//        SJF = true;
-//        SRTN = true;
-//        RR = true;
-//        // if all false, assume user is unfamiliar
-//        // and want to see all output
-//    }
-//}
+void check_arguments(bool& v, bool& d, int argc, char** argv,
+   bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
+
+   string argument;
+
+   for (int i = 1; i < argc; ++i) {
+       if (argv[i][0] == '-') {
+           if (argv[i][1] == 'v') {
+               v = true;
+           }
+       if (argv[i][1] == 'd') {
+               d = true;
+           }
+       }
+       argument = argv[i];
+       if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
+       if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
+       if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
+       if (argument == "RR"   || argument == "rr")   {RR = true;}
+   }
+   if (
+       FCFS == false &&
+       SJF == false &&
+       SRTN == false &&
+       RR == false
+       ) {
+       FCFS = true;
+       SJF = true;
+       SRTN = true;
+       RR = true;
+       // if all false, assume user is unfamiliar
+       // and want to see all output
+   }
+}
 
 //void detail(){
 //    //calculate TAT and cpu utilization and idle time
