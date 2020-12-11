@@ -59,16 +59,19 @@ void load_file(bool verbose) {
             << " with " << numbers << " CPU bursts.\n";
            continue;
        }
-        if (numbers == counter) {
-            processes.push_back(p1);
-            process temp;
-            ss >> id >> arrival >> numbers;
-            temp.p_id=id;
-            temp.arrivalT = arrival;
-            temp.numOfCPU = numbers;
-            p1 = temp;
-            counter=0;
-        }
+       // for (int i = 0; i < numbers; ++i) {
+       //    processes.push(p1)
+       // }
+        // if (numbers == counter) {
+        //     processes.push_back(p1);
+        //     process temp;
+        //     ss >> id >> arrival >> numbers;
+        //     temp.p_id=id;
+        //     temp.arrivalT = arrival;
+        //     temp.numOfCPU = numbers;
+        //     p1 = temp;
+        //     counter=0;
+        // }
        // else {
        //     ss >> cnum >> cpu >> io;
        //     p1.insertCPU_IO(cpu, io);
