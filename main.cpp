@@ -99,7 +99,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 	while (complete < totalJobs) {
 
         for (it = waitQ.begin(); it != waitQ.end(); ++it) it->ioList.front()--;
-            
+
 		while (!processes.empty()) {
 		    if (processes.front().arrivalT <= time) {
 		        temp = processes.front();
@@ -117,11 +117,12 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 		    if (verbose) cout << "Time " << time << ": Process "
 		    	<< running.p_id << ": readyQ -> running.\n";
 		    cpu_idle = false;
-		  } 
+		  }
+          else idle++; 
 		} // if cpu_idle 
 
-	
         time++;
+
 		if (!cpu_idle) {
 			running.cpuList.front()--;
 			if (running.cpuList.front() == 0) {
