@@ -113,7 +113,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 
 		if (cpu_idle) {
 		  if (!readyQ.empty()) { 
-		    running = readyQ.front(); readyQ.pop_front();
+		    running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
 		    if (verbose) cout << "Time " << time << ": Process "
 		    	<< running.p_id << ": readyQ -> running.\n";
 		    cpu_idle = false;
@@ -124,7 +124,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
         time++;
 
 		if (!cpu_idle) {
-			running.cpuList.front()--;
+			--running.cpuList.front();//no interrupt, current process burst decreasing;
 			if (running.cpuList.front() == 0) {
 				cpu_idle = true;
 				if (verbose) cout << "\nTime " << time 
@@ -174,13 +174,15 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
     int time = 0, complete = 0, idle =0;
     int tq = 10;
 
-    list <process> :: iterator it; 
+    list <process> :: iterator it;
     processes.sort();
     process temp;
     process running;
 
     bool cpu_idle = true;
-    while (!processes.empty()) {
+     while(complete != totalJobs){
+       for (it = waitQ.begin(); it != waitQ.end(); ++it) it->ioList.front()--;
+       while (!processes.empty()) {
             if (processes.front().arrivalT <= time) {
                 temp = processes.front();
                 readyQ.push_back(temp);
@@ -190,6 +192,49 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
                 continue;
             } else break;
         } // above loop: push processes into ready queue from new arriving processes
+        if (cpu_idle) {
+          if (!readyQ.empty()) {
+            running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready
+            if (verbose) cout << "Time " << time << ": Process "
+                << running.p_id << ": readyQ -> running.\n";
+            cpu_idle = false;
+          }
+          //else idle++;
+        } // if cpu_idle
+         if(readyQ.front().arrivalT == time){
+             if(!cpu_idle) readyQ.push_back(running);
+             running = readyQ.front(); readyQ.pop_front();
+             cout<<"At " << time<< " process " <<running.p_id<<" interrupt."<<endl;
+             continue;
+         }
+         if(tq==0){
+             readyQ.push_back(running);
+             running = readyQ.front(); readyQ.pop_front();
+         }
+        time++;
+        if (!cpu_idle) {
+            --running.cpuList.front();
+            if (running.cpuList.front() == 0) {
+                cpu_idle = true;
+                if (verbose) cout << "\nTime " << time
+                    << ": Process " << running.p_id
+                    << ": A cpu burst finished.\n";
+                running.cpuList.pop_front();
+                if (running.ioList.empty()) {
+                    if (verbose) cout << "Time " << time
+                        << ": Process " << running.p_id
+                        << ": is complete.\n";
+                    finished.push_back(running); complete++;
+                } else {
+                    if (verbose) cout << "Time " << time
+                        << ": Process " << running.p_id
+                        << ": running -> waitQ.\n";
+                    waitQ.push_back(running);
+                }
+            } // if (running.cpuList.front() == 0)
+        }
+    }
+    // if (!cpu_idle)
 
 }
 //void display() {
@@ -245,7 +290,7 @@ int main(int argc, char** argv) {
 //        }
 //    }
 
-    fcfs(processes, totalJobs, verbose);
+    //fcfs(processes, totalJobs, verbose);
     rr(processes, totalJobs, verbose);
 //    sjf(processes,totalJobs);
 //    /*------SRTN------*/
