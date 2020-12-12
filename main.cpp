@@ -98,6 +98,8 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 	
 	while (complete < totalJobs) {
 
+        for (it = waitQ.begin(); it != waitQ.end(); ++it) it->ioList.front()--;
+            
 		while (!processes.empty()) {
 		    if (processes.front().arrivalT <= time) {
 		        temp = processes.front();
@@ -118,10 +120,10 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 		  } 
 		} // if cpu_idle 
 
-		time++;
-
+	
+        time++;
 		if (!cpu_idle) {
-			--running.cpuList.front();
+			running.cpuList.front()--;
 			if (running.cpuList.front() == 0) {
 				cpu_idle = true;
 				if (verbose) cout << "\nTime " << time 
@@ -142,8 +144,10 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 			} // if (running.cpuList.front() == 0) 
 		}// if (!cpu_idle)
 
+       
 		waitQ.sort(comp_by_io_remain);
-		for (it = waitQ.begin(); it != waitQ.end(); ++it) it->ioList.front()--;
+
+		
 		while (!waitQ.empty()) {
 			if (waitQ.front().ioList.front() == 0) {
 				if (verbose) cout << "Time " << time 
@@ -156,7 +160,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 				continue;
 			} else break;
 		} // above loop: push processes from waitQ -> readyQ
-	
+	 
 
     } // end of top while loop
 } // end of fcfs
