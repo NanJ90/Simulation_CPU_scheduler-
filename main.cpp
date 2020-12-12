@@ -6,10 +6,12 @@
 #include <algorithm>
 #include <queue>
 #include <list>
+#include <iterator>
+#include <bits/stdc++.h>
+#include "functions.h"
 
 using namespace std;
 
-void check_arguments(bool&, bool&, int, char**, bool&, bool&, bool&, bool&);
 
 const string stauts[] = { "new", "read","wait","run","execute" }; // 0 1 2 3 4
 
@@ -28,7 +30,6 @@ struct process {
     list<int> cpuList;
     list<int> ioList;
 };
-
 
 void load_file(int& totalJobs,list<process>& processes, bool verbose) {
     int id, arrival, numbers=0;
@@ -66,22 +67,36 @@ void load_file(int& totalJobs,list<process>& processes, bool verbose) {
     infile.close();
 
 }
+bool operator<(process const & lhs, process const & rhs) {return lhs.arrivalT < rhs.arrivalT;}
 /*------FCFS*--------*/
-void fcfs(list<process>& processes){
+void fcfs(list<process>& processes, int& totalJobs, bool verbose){
     string algName = "First come first serve";
+
     list<process> readyQ, waitQ;
     int time = 0, complete = 0, idle =0;
     //bool cpu_idle;
+
+    list <process> :: iterator it; 
+    processes.sort();
+    process temp;
     
-    while(complete != 4){
-        for(auto it= processes.begin();it != processes.end();it++){//pushing process is ready at this time
-            if(it->arrivalT <= time){
-                readyQ.push_back(*it);
-                processes.erase(it);
-            }
-        }
-        time++;
-        if(readyQ.front().cpu_burst == 0 && readyQ.front().io_burst == 0){
+    while(complete != totalJobs){
+
+      while(!processes.empty()) {
+        if (processes.front().arrivalT <= time) {
+          temp = processes.front();
+          readyQ.push_back(temp);
+          if (verbose) cout << "At time: " << time << ", pushed process "
+            << temp.p_id << " into readyQ.\n";
+          processes.pop_front();
+          continue;
+        } else break;
+      } // above loop: push processes into ready queue from new arriving processes
+
+      time++;
+
+      if(readyQ.front().cpu_burst == 0 && readyQ.front().io_burst == 0){
+
             int *cpuBurst =&readyQ.front().cpu_burst, *ioBurst = &readyQ.front().io_burst;
             list<int> *cpuList = &readyQ.front().cpuList;
             list<int> *ioList = &readyQ.front().ioList;
@@ -92,20 +107,20 @@ void fcfs(list<process>& processes){
                 p = &readyQ.front();
                 p->finishT = time;
                 processes.push_back(*p);//push back to processes list
-                cout<<"process "<<p->p_id<<" at "<<time<<" has completed."<<endl<<endl;
+                if (verbose) cout<<"process "<<p->p_id<<" at "<<time<<" has completed."<<endl<<endl;
                 readyQ.pop_front();
                 continue;
             };
             //if process is ready to execute
             if(!readyQ.front().running) {
                 readyQ.front().running= true;
-                cout<<"at time "<<time-1<<" process "<<readyQ.front().p_id<<" is runnning"<<endl;
+                if (verbose) cout<<"at time "<<time-1<<" process "<<readyQ.front().p_id<<" is runnning"<<endl;
                 *cpuBurst = cpuList->front()-1;
                 cpuList->pop_front();
             }
             else{// finish one cpu burst and move to waiting queue
                 readyQ.front().running = false;
-                cout<<"at time "<<time<<" process "<<readyQ.front().p_id<<" is start to wait"<<endl;
+                if (verbose) cout<<"at time "<<time<<" process "<<readyQ.front().p_id<<" is start to wait"<<endl;
                 *ioBurst = ioList->front();
                 ioList->pop_front();
                 waitQ.push_back(readyQ.front());
@@ -185,7 +200,7 @@ int main(int argc, char** argv) {
 //        }
 //    }
 
-    fcfs(processes);
+    fcfs(processes, totalJobs, verbose);
 //    sjf(processes,totalJobs);
 //    /*------SRTN------*/
 //    vector<process> ready;
@@ -291,40 +306,40 @@ int main(int argc, char** argv) {
 //    summary(algName,current, idletime);
 //}
 
-void check_arguments(bool& v, bool& d, int argc, char** argv,
-   bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
+// void check_arguments(bool& v, bool& d, int argc, char** argv,
+//    bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
 
-   string argument;
+//    string argument;
 
-   for (int i = 1; i < argc; ++i) {
-       if (argv[i][0] == '-') {
-           if (argv[i][1] == 'v') {
-               v = true;
-           }
-       if (argv[i][1] == 'd') {
-               d = true;
-           }
-       }
-       argument = argv[i];
-       if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
-       if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
-       if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
-       if (argument == "RR"   || argument == "rr")   {RR = true;}
-   }
-   if (
-       FCFS == false &&
-       SJF == false &&
-       SRTN == false &&
-       RR == false
-       ) {
-       FCFS = true;
-       SJF = true;
-       SRTN = true;
-       RR = true;
-       // if all false, assume user is unfamiliar
-       // and want to see all output
-   }
-}
+//    for (int i = 1; i < argc; ++i) {
+//        if (argv[i][0] == '-') {
+//            if (argv[i][1] == 'v') {
+//                v = true;
+//            }
+//        if (argv[i][1] == 'd') {
+//                d = true;
+//            }
+//        }
+//        argument = argv[i];
+//        if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
+//        if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
+//        if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
+//        if (argument == "RR"   || argument == "rr")   {RR = true;}
+//    }
+//    if (
+//        FCFS == false &&
+//        SJF == false &&
+//        SRTN == false &&
+//        RR == false
+//        ) {
+//        FCFS = true;
+//        SJF = true;
+//        SRTN = true;
+//        RR = true;
+//        // if all false, assume user is unfamiliar
+//        // and want to see all output
+//    }
+// }
 
 //void detail(){
 //    //calculate TAT and cpu utilization and idle time
