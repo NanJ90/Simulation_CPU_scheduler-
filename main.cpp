@@ -7,7 +7,7 @@
 #include <queue>
 #include <list>
 #include <iterator>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
 #include "functions.h"
 
 using namespace std;
@@ -106,7 +106,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose){
                 process *p;
                 p = &readyQ.front();
                 p->finishT = time;
-                processes.push_back(*p);//push back to processes list
+                //processes.push_back(*p);//push back to processes list
                 if (verbose) cout<<"process "<<p->p_id<<" at "<<time<<" has completed."<<endl<<endl;
                 readyQ.pop_front();
                 continue;
@@ -137,6 +137,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose){
             for(auto it = waitQ.begin(); it !=waitQ.end();it++){
                 if(it->io_burst == 0) {
                     readyQ.push_back(*it);
+                    waitQ.pop_front();
                 }
                 it->io_burst--;
             }
