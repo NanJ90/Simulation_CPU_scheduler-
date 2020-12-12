@@ -102,7 +102,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 
 		while (!processes.empty()) {
 		    if (processes.front().arrivalT <= time) {
-		        temp = processes.front();
+		        temp = processes.front();                
 		        readyQ.push_back(temp);
 		        if (verbose) cout << "Time " << time << ": Process "
 		            << temp.p_id << ": arrived -> readyQ.\n";
@@ -165,7 +165,33 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 
     } // end of top while loop
 } // end of fcfs
+/*-------RR---------*/
+void rr(list<process>& processes, int& totalJobs, bool verbose){
+    string algName = "Round Robin";
 
+    list<process> readyQ, waitQ, finished;
+
+    int time = 0, complete = 0, idle =0;
+    int tq = 10;
+
+    list <process> :: iterator it; 
+    processes.sort();
+    process temp;
+    process running;
+
+    bool cpu_idle = true;
+    while (!processes.empty()) {
+            if (processes.front().arrivalT <= time) {
+                temp = processes.front();
+                readyQ.push_back(temp);
+                if (verbose) cout << "Time " << time << ": Process "
+                    << temp.p_id << ": arrived -> readyQ.\n";
+                processes.pop_front();
+                continue;
+            } else break;
+        } // above loop: push processes into ready queue from new arriving processes
+
+}
 //void display() {
 //    cout << "The is process has  " << p_id << " " << numOfCPU << " " << arrivalT << endl;
 //    cout << "process " << p_id << "has cpu and io " << endl;
@@ -220,6 +246,7 @@ int main(int argc, char** argv) {
 //    }
 
     fcfs(processes, totalJobs, verbose);
+    rr(processes, totalJobs, verbose);
 //    sjf(processes,totalJobs);
 //    /*------SRTN------*/
 //    vector<process> ready;
