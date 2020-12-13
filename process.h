@@ -10,7 +10,8 @@ struct process {
 	int finishT;
 	int serviceT;
 	int tatT;
-	int cpu_position;
+	int totalCPUBurst;
+	//int cpu_position;
 	int io_position;
 	int cpu_burst; // used for sjf
 	int io_burst;
@@ -35,4 +36,6 @@ void sjf(list<process>& processes, int& totalJobs, bool verbose);
 void srtn(list<process>& processes, int& totalJobs, bool verbose);
 // rr.cpp
 void rr(list<process>& processes, int& totalJobs, bool verbose,int tq);
+//fcfs_sc.cpp
+void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_version);
 
