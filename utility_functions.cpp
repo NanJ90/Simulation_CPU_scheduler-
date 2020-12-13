@@ -13,6 +13,9 @@ bool comp_by_io_remain(process const & lhs, process const & rhs) {
 bool comp_by_cpu_burst(process const & lhs, process const & rhs) {
     return lhs.cpu_burst < rhs.cpu_burst;
 }
+bool comp_by_cpu_remain(process const & lhs, process const & rhs) {
+    return lhs.cpuList.front() < rhs.cpuList.front();
+}
 
 void load_file(int& totalJobs,list<process>& processes, bool verbose) {
     int id, arrival, numbers=0;

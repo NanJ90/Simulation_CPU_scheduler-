@@ -12,7 +12,7 @@ struct process {
 	int tatT;
 	int cpu_position;
 	int io_position;
-	int cpu_burst;
+	int cpu_burst; // used for sjf
 	int io_burst;
 	bool running = false;
 	list<int> cpuList;
@@ -23,6 +23,7 @@ struct process {
 bool operator<(process const & lhs, process const & rhs);
 bool comp_by_io_remain(process const & lhs, process const & rhs);
 bool comp_by_cpu_burst(process const & lhs, process const & rhs);
+bool comp_by_cpu_remain(process const & lhs, process const & rhs);
 
 void check_arguments(bool&, bool&, int, char**, bool&, bool&, bool&, bool&);
 void load_file(int& totalJobs,list<process>& processes, bool verbose);
