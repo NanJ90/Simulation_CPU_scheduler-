@@ -14,7 +14,6 @@ struct process {
 	int io_position;
 	int cpu_burst; // used for sjf
 	int io_burst;
-	bool running = false;
 	list<int> cpuList;
 	list<int> ioList;
 };
