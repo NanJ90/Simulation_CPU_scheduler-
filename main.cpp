@@ -77,6 +77,9 @@ bool operator<(process const & lhs, process const & rhs) {
 bool comp_by_io_remain(process const & lhs, process const & rhs) {
     return lhs.ioList.front() < rhs.ioList.front();
 }
+bool comp_by_cpu_burst(process const & lhs, process const & rhs) {
+    return lhs.cpu_burst < rhs.cpu_burst;
+}
 
 
 /*------FCFS*--------*/
@@ -86,8 +89,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 
 	list<process> readyQ, waitQ, finished;
 
-	int time = 0, complete = 0, idle =0;
-	//bool cpu_idle;
+	int time = 0, complete = 0, idle = 0;
 
 	list <process> :: iterator it; 
 	processes.sort();
@@ -165,6 +167,93 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 
     } // end of top while loop
 } // end of fcfs
+
+/*------SJF*--------*/
+void sjf(list<process>& processes, int& totalJobs, bool verbose) {
+
+	string algName = "shortest job first";
+
+	list<process> readyQ, waitQ, finished;
+
+	int time = 0, complete = 0, idle = 0;
+
+	list <process> :: iterator it; 
+	processes.sort();
+	process temp;
+	process running;
+
+	bool cpu_idle = true;
+	
+	while (complete < totalJobs) {
+
+        for (it = waitQ.begin(); it != waitQ.end(); ++it) it->ioList.front()--;
+
+		while (!processes.empty()) {
+		    if (processes.front().arrivalT <= time) {
+		        temp = processes.front(); 
+		        temp.cpu_burst = temp.cpuList.front(); // delta from fcfs               
+		        readyQ.push_back(temp);
+		        if (verbose) cout << "Time " << time << ": Process "
+		            << temp.p_id << ": arrived -> readyQ.\n";
+		        processes.pop_front();
+		        continue;
+		    } else break;
+		} // above loop: push processes into ready queue from new arriving processes
+
+		if (cpu_idle) {
+		  if (!readyQ.empty()) { 
+		  	readyQ.sort(comp_by_cpu_burst); // delta from fcfs    
+		    running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
+		    if (verbose) cout << "Time " << time << ": Process "
+		    	<< running.p_id << ": readyQ -> running.\n";
+		    cpu_idle = false;
+		  }
+          else idle++; 
+		} // if cpu_idle 
+
+        time++;
+
+		if (!cpu_idle) {
+			--running.cpuList.front();//no interrupt, current process burst decreasing;
+			if (running.cpuList.front() == 0) {
+				cpu_idle = true;
+				if (verbose) cout << "\nTime " << time 
+					<< ": Process " << running.p_id 
+					<< ": A cpu burst finished.\n";
+				running.cpuList.pop_front();
+				if (running.ioList.empty()) {
+					if (verbose) cout << "Time " << time 
+						<< ": Process " << running.p_id 
+						<< ": is complete.\n";
+					finished.push_back(running); complete++;
+				} else {
+					if (verbose) cout << "Time " << time 
+						<< ": Process " << running.p_id 
+						<< ": running -> waitQ.\n";
+					running.cpu_burst = running.cpuList.front(); // delta from fcfs 
+					waitQ.push_back(running);					
+				}
+			} // if (running.cpuList.front() == 0) 
+		}// if (!cpu_idle)
+
+		waitQ.sort(comp_by_io_remain);
+
+		while (!waitQ.empty()) {
+			if (waitQ.front().ioList.front() == 0) {
+				if (verbose) cout << "Time " << time 
+					<< ": Process " << waitQ.front().p_id 
+					<< ": waitQ -> readyQ.\n";
+				temp = waitQ.front();
+				waitQ.pop_front();
+				temp.ioList.pop_front();
+				readyQ.push_back(temp);
+				continue;
+			} else break;
+		} // above loop: push processes from waitQ -> readyQ
+	 
+    } // end of top while loop
+} // end of sjf
+
 /*-------RR---------*/
 void rr(list<process>& processes, int& totalJobs, bool verbose){
     string algName = "Round Robin";
@@ -194,7 +283,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
         } // above loop: push processes into ready queue from new arriving processes
         if (cpu_idle) {
           if (!readyQ.empty()) {
-            running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready
+            running = readyQ.front(); readyQ.pop_front(); //if idle and a process is ready
             tq=10;
             if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
@@ -306,45 +395,41 @@ int main(int argc, char** argv) {
     bool SRTN = false;
     bool RR = false;
     int totalJobs = 0;
-    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR);
-    list<process> processes;
-    load_file(totalJobs,processes,verbose);
-//    for(auto it = processes.begin(); it!=processes.end();it++){ //print out each process
-//        cout<<"Process "<<it->p_id<<endl;
-//        for(auto j = it->cpuList.begin();j!=it->cpuList.end();j++){
-//            cout<<"cpu "<<*j<<endl;
-//        }
-//    }
 
-    //fcfs(processes, totalJobs, verbose);
-    rr(processes, totalJobs, verbose);
-//    sjf(processes,totalJobs);
-//    /*------SRTN------*/
-//    vector<process> ready;
-//    ready = processes;
-//    int current=0, idleT=0, mins = INT_MAX, complete = 0, shortest = 0;
-//    while(complete != totalJobs){
-//        for(int i = 0;i< totalJobs;i++){
-//            if(processes[i].arrivalT <= current){
-//                //mins = processes[i].cpuList[processes[i].currentC].burstT;
-//                shortest = i;
-//                //ready.push_back(processes[i]);
-//            }
-//            ready[shortest].cputime = processes[i].cpuList[processes[i].currentC].burstT-current;
-//            if(ready[shortest].cpuList[ready[shortest].currentC].finish == true && ready[shortest].ioList[ready[shortest].currentC].isio == true){
-//                ready[shortest].iotime = ready[shortest].ioList[ready[shortest].currentC].burstT-current;
-//
-//            }
-//            mins = ready[shortest].cpuList[ready[shortest].currentC].remainT;
-//            if(mins == 0) mins = INT_MAX;
-//            current++;
-//
-//        }
-//
-//    }
-   
+    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR);
+
+    list<process> processes;
+
+	if (FCFS) {
+		load_file(totalJobs,processes,verbose);
+		fcfs(processes, totalJobs, verbose);
+		// if (detail_output) details(processes, totalJobs, "FCFS");
+		// 	else summary(processes, totalJobs, "FCFS"); 
+	}
+
+	if (SJF) {
+		load_file(totalJobs,processes,verbose);
+		sjf(processes, totalJobs, verbose);
+		// if (detail_output) details(processes, totalJobs, "SJF");
+		// 	else summary(processes, totalJobs, "SJF");
+	}
+
+	if (SRTN) {
+		load_file(totalJobs,processes,verbose);
+		// srtn(processes, totalJobs, verbose);
+		// if (detail_output) details(processes, totalJobs, "SRTN");
+		// 	else summary(processes, totalJobs, "SRTN");
+	}
+
+	if (RR) {
+		load_file(totalJobs,processes,verbose);
+		rr(processes, totalJobs, verbose);
+		// if (detail_output) details(processes, totalJobs, "RR");
+		// 	else summary(processes, totalJobs, "RR");
+	}
     return 0;
-}
+} // end of int main()
+
 //void summary(string alg,int current, int idletime){
 //    double cpuUtilization=0.0;
 //    cpuUtilization =static_cast<double>(current-idletime)/static_cast<double>(current)*100.0;
@@ -423,40 +508,6 @@ int main(int argc, char** argv) {
 //    summary(algName,current, idletime);
 //}
 
-// void check_arguments(bool& v, bool& d, int argc, char** argv,
-//    bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
-
-//    string argument;
-
-//    for (int i = 1; i < argc; ++i) {
-//        if (argv[i][0] == '-') {
-//            if (argv[i][1] == 'v') {
-//                v = true;
-//            }
-//        if (argv[i][1] == 'd') {
-//                d = true;
-//            }
-//        }
-//        argument = argv[i];
-//        if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
-//        if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
-//        if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
-//        if (argument == "RR"   || argument == "rr")   {RR = true;}
-//    }
-//    if (
-//        FCFS == false &&
-//        SJF == false &&
-//        SRTN == false &&
-//        RR == false
-//        ) {
-//        FCFS = true;
-//        SJF = true;
-//        SRTN = true;
-//        RR = true;
-//        // if all false, assume user is unfamiliar
-//        // and want to see all output
-//    }
-// }
 
 //void detail(){
 //    //calculate TAT and cpu utilization and idle time

@@ -28,9 +28,9 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
        SRTN == false &&
        RR == false
        ) {
-       FCFS = true;
-       SJF = true;
-       SRTN = true;
+       FCFS = false;
+       SJF = false;
+       SRTN = false;
        RR = true;
        // if all false, assume user is unfamiliar
        // and want to see all output
