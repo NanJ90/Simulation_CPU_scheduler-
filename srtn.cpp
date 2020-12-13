@@ -62,7 +62,7 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose) {
 					cpu_idle = false;
 			  	}
 			}
-			preempt == false;
+			preempt = false;
 		} // if (preempt == true)
 
 		else // if no preemption request same as sjf 
