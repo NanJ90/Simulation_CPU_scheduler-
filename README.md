@@ -1,5 +1,9 @@
 # Simulation_CPU_scheduler-
 
+Started new with cpu burst, io burst simulation
+
 Added verbose mode
 
-working on cpu io file load
+Confirmed fcfs 
+Confirmed sjf 
+
