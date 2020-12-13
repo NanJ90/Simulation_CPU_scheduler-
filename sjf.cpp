@@ -3,7 +3,10 @@
 #include "process.h"
 
 /*------SJF*--------*/
-void sjf(list<process>& processes, int& totalJobs, bool verbose) {
+void sjf(list<process>& processes, int& totalJobs, bool verbose, bool sc_version) {
+
+	int switching_costs;
+	if (sc_version) switching_costs = 5;
 
 	string algName = "shortest job first";
 
@@ -37,6 +40,7 @@ void sjf(list<process>& processes, int& totalJobs, bool verbose) {
 		if (cpu_idle) {
 		  if (!readyQ.empty()) { 
 		  	readyQ.sort(comp_by_cpu_burst); // delta from fcfs    
+		  	if (sc_version) if (running.p_id != readyQ.front().p_id) switching_costs = 5; // v2
 		    running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
 		    if (verbose) cout << "Time " << time << ": Process "
 		    	<< running.p_id << ": readyQ -> running.\n";
@@ -48,6 +52,9 @@ void sjf(list<process>& processes, int& totalJobs, bool verbose) {
         time++;
 
 		if (!cpu_idle) {
+			if (switching_costs && sc_version) { // v2
+				switching_costs--;
+			} else
 			--running.cpuList.front();//no interrupt, current process burst decreasing;
 			if (running.cpuList.front() == 0) {
 				cpu_idle = true;

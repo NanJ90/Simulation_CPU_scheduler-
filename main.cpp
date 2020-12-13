@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
 	if (SJF) {
 		load_file(totalJobs,processes,verbose);
-		sjf(processes, totalJobs, verbose);
+		sjf(processes, totalJobs, verbose, sc_version);
 		// if (detail_output) details(processes, totalJobs, "SJF");
 		// 	else summary(processes, totalJobs, "SJF");
 	}

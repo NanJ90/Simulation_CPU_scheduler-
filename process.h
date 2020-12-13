@@ -31,7 +31,7 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
 void load_file(int& totalJobs,list<process>& processes, bool verbose);
 
 // sjf.cpp
-void sjf(list<process>& processes, int& totalJobs, bool verbose);
+void sjf(list<process>& processes, int& totalJobs, bool verbose, bool sc_version);
 // rr.cpp
 void srtn(list<process>& processes, int& totalJobs, bool verbose);
 // rr.cpp
