@@ -3,13 +3,13 @@
 #include "process.h"
 
 /*-------RR---------*/
-void rr(list<process>& processes, int& totalJobs, bool verbose){
+void rr(list<process>& processes, int& totalJobs, bool verbose,int tq){
     string algName = "Round Robin";
 
     list<process> readyQ, waitQ, finished;
 
     int time = 0, complete = 0, idle =0;
-    int tq = 100;
+    int timeQ = tq;
     int counter = 0;
     list <process> :: iterator it;
     processes.sort();
@@ -32,27 +32,27 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
         if (cpu_idle) {
           if (!readyQ.empty()) {
             running = readyQ.front(); readyQ.pop_front(); //if idle and a process is ready
-            tq=100;
+            timeQ = tq;
             if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
             cpu_idle = false;
           }
           else idle++;
         } // if cpu_idle
-        
+
         time++;
-        if(tq==0){
+        if(timeQ==0){
              if(!readyQ.empty()){
                  readyQ.push_back(running);
                  running = readyQ.front(); readyQ.pop_front();
                  if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
              }
-             tq=100;
+             timeQ = tq;
             }
         if (!cpu_idle) {
             --running.cpuList.front();
-            --tq;
+            --timeQ;
             if (running.cpuList.front() == 0) {
                 cpu_idle = true;
                 if (verbose) cout << "\nTime " << time

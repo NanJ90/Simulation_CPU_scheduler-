@@ -58,9 +58,10 @@ int main(int argc, char** argv) {
     bool SJF = false;
     bool SRTN = false;
     bool RR = false;
+    int tq;
     int totalJobs = 0;
 
-    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR);
+    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR,tq);
 
     list<process> processes;
 
@@ -87,7 +88,7 @@ int main(int argc, char** argv) {
 
 	if (RR) {
 		load_file(totalJobs,processes,verbose);
-		rr(processes, totalJobs, verbose);
+		rr(processes, totalJobs, verbose,tq);
 		// if (detail_output) details(processes, totalJobs, "RR");
 		// 	else summary(processes, totalJobs, "RR");
 	}

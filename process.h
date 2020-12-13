@@ -24,7 +24,7 @@ bool comp_by_io_remain(process const & lhs, process const & rhs);
 bool comp_by_cpu_burst(process const & lhs, process const & rhs);
 bool comp_by_cpu_remain(process const & lhs, process const & rhs);
 
-void check_arguments(bool&, bool&, int, char**, bool&, bool&, bool&, bool&);
+void check_arguments(bool&, bool&, int, char**, bool&, bool&, bool&, bool&,int&);
 void load_file(int& totalJobs,list<process>& processes, bool verbose);
 
 // fcfs.cpp
@@ -34,5 +34,5 @@ void sjf(list<process>& processes, int& totalJobs, bool verbose);
 // rr.cpp
 void srtn(list<process>& processes, int& totalJobs, bool verbose);
 // rr.cpp
-void rr(list<process>& processes, int& totalJobs, bool verbose);
+void rr(list<process>& processes, int& totalJobs, bool verbose,int tq);
 

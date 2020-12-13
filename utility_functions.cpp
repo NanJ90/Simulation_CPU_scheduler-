@@ -21,7 +21,7 @@ void load_file(int& totalJobs,list<process>& processes, bool verbose) {
     int id, arrival, numbers=0;
     int overheads;
     ifstream infile;
-    infile.open("exampleData.txt");
+    infile.open("inData.txt");
 
     infile >> totalJobs >> overheads;
     if (verbose) cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
@@ -59,7 +59,7 @@ void load_file(int& totalJobs,list<process>& processes, bool verbose) {
 } // end of load_file()
 
 void check_arguments(bool& v, bool& d, int argc, char** argv,
-   bool& FCFS, bool& SJF, bool& SRTN, bool& RR) {
+   bool& FCFS, bool& SJF, bool& SRTN, bool& RR,int&tq) {
 
    string argument;
 
@@ -76,7 +76,14 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
        if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
        if (argument == "SJF"  || argument == "sjf")  {SJF = true;}
        if (argument == "SRTN" || argument == "srtn") {SRTN = true;}
-       if (argument == "RR"   || argument == "rr")   {RR = true;}
+       if (argument == "RR10"   || argument == "rr10" ||
+           argument == "RR50"   || argument == "rr50" ||
+           argument == "RR100"   || argument == "rr100")   {
+        tq = stoi(argument.substr(2));
+        //cout << "time quantumn initialize "<<tq<<endl<<endl;
+        //printf("time quantumn initialize%i\n",tq);
+        RR = true;
+      }
    }
    if (
        FCFS == false &&
