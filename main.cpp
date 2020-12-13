@@ -58,16 +58,19 @@ int main(int argc, char** argv) {
     bool SJF = false;
     bool SRTN = false;
     bool RR = false;
+
+    bool sc_version = true;
+
     int tq;
     int totalJobs = 0;
 
-    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR,tq);
+    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR, tq);
 
     list<process> processes;
 
 	if (FCFS) {
 		load_file(totalJobs,processes,verbose);
-		fcfs(processes, totalJobs, verbose);
+		fcfs(processes, totalJobs, verbose, sc_version);
 		// if (detail_output) details(processes, totalJobs, "FCFS");
 		// 	else summary(processes, totalJobs, "FCFS"); 
 	}

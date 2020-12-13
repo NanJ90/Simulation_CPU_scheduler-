@@ -3,7 +3,10 @@
 #include "process.h"
 
 /*------FCFS*--------*/
-void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
+void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_version) { 
+
+	int switching_costs;
+	if (sc_version) switching_costs = 5;
 
 	string algName = "First come first serve";
 
@@ -35,6 +38,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 
 		if (cpu_idle) {
 		  if (!readyQ.empty()) { 
+		  	if (sc_version) if (running.p_id != readyQ.front().p_id) switching_costs = 5; // v2
 		    running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
 		    if (verbose) cout << "Time " << time << ": Process "
 		    	<< running.p_id << ": readyQ -> running.\n";
@@ -46,7 +50,11 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
         time++;
 
 		if (!cpu_idle) {
-			--running.cpuList.front();//no interrupt, current process burst decreasing;
+			if (switching_costs && sc_version) { // v2
+				switching_costs--;
+			} else
+			//no interrupt, current process burst decreasing;
+			--running.cpuList.front();
 			if (running.cpuList.front() == 0) {
 				cpu_idle = true;
 				if (verbose) cout << "\nTime " << time 
@@ -84,6 +92,5 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose) {
 			} else break;
 		} // above loop: push processes from waitQ -> readyQ
 	 
-
     } // end of top while loop
 } // end of fcfs
