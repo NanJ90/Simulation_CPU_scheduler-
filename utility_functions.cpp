@@ -19,9 +19,9 @@ bool comp_by_cpu_remain(process const & lhs, process const & rhs) {
 
 void load_file(int& totalJobs,list<process>& processes, bool verbose) {
     int id, arrival, numbers=0;
-    int overheads;
+    int overheads; 
     ifstream infile;
-    infile.open("inData.txt");
+    infile.open("exampleData.txt");
 
     infile >> totalJobs >> overheads;
     if (verbose) cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
@@ -34,6 +34,7 @@ void load_file(int& totalJobs,list<process>& processes, bool verbose) {
         p1.p_id = id;
         p1.arrivalT = arrival;
         p1.numOfCPU = numbers;
+        p1.totalCPUBurst = 0;
 
         if(verbose) cout<<"From input file: Read process "<<p1.p_id
             <<" that arrives at "<<p1.arrivalT
@@ -48,10 +49,11 @@ void load_file(int& totalJobs,list<process>& processes, bool verbose) {
                 infile >> cnum >> cpu >> io;
                 p1.ioList.push_back(io);
             }
+            p1.totalCPUBurst += cpu;          
             p1.cpuList.push_back(cpu);
         }
-        p1.cpu_position = 0;
-        p1.io_position = 0;
+        //p1.cpu_position = 0;
+        //p1.io_position = 0;
         processes.push_back(p1);
     }
     cout << endl;
