@@ -25,17 +25,17 @@ bool comp_by_io_remain(process const & lhs, process const & rhs);
 bool comp_by_cpu_burst(process const & lhs, process const & rhs);
 bool comp_by_cpu_remain(process const & lhs, process const & rhs);
 
-void check_arguments(bool&, bool&, int, char**, bool&, bool&, bool&, bool&,int&);
+void check_arguments(bool& v, bool& d, int argc, char** argv,
+   bool& FCFS, bool& SJF, bool& SRTN, bool& RR,int&tq, bool& sc_version);
+
 void load_file(int& totalJobs,list<process>& processes, bool verbose);
 
-// fcfs.cpp
-void fcfs(list<process>& processes, int& totalJobs, bool verbose);
 // sjf.cpp
 void sjf(list<process>& processes, int& totalJobs, bool verbose);
 // rr.cpp
 void srtn(list<process>& processes, int& totalJobs, bool verbose);
 // rr.cpp
 void rr(list<process>& processes, int& totalJobs, bool verbose,int tq);
-//fcfs_sc.cpp
+// fcfs.cpp
 void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_version);
 

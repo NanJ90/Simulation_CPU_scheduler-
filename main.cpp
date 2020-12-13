@@ -59,12 +59,12 @@ int main(int argc, char** argv) {
     bool SRTN = false;
     bool RR = false;
 
-    bool sc_version = true;
+    bool sc_version = false;
 
     int tq;
     int totalJobs = 0;
 
-    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR, tq);
+    check_arguments(verbose, detail_output, argc, argv, FCFS, SJF, SRTN, RR, tq, sc_version);
 
     list<process> processes;
 

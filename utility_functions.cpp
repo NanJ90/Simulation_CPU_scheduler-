@@ -61,7 +61,7 @@ void load_file(int& totalJobs,list<process>& processes, bool verbose) {
 } // end of load_file()
 
 void check_arguments(bool& v, bool& d, int argc, char** argv,
-   bool& FCFS, bool& SJF, bool& SRTN, bool& RR,int&tq) {
+   bool& FCFS, bool& SJF, bool& SRTN, bool& RR,int&tq, bool& sc_version) {
 
    string argument;
 
@@ -73,6 +73,9 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
        if (argv[i][1] == 'd') {
                d = true;
            }
+        if (argv[i][1] == 'x') {
+               sc_version = true;
+       	}	
        }
        argument = argv[i];
        if (argument == "FCFS" || argument == "fcfs") {FCFS = true;}
@@ -101,3 +104,4 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
        // and want to see all output
    }
 }
+
