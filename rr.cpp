@@ -9,7 +9,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
     list<process> readyQ, waitQ, finished;
 
     int time = 0, complete = 0, idle =0;
-    int tq = 10;
+    int tq = 100;
     int counter = 0;
     list <process> :: iterator it;
     processes.sort();
@@ -32,7 +32,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
         if (cpu_idle) {
           if (!readyQ.empty()) {
             running = readyQ.front(); readyQ.pop_front(); //if idle and a process is ready
-            tq=10;
+            tq=100;
             if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
             cpu_idle = false;
@@ -42,7 +42,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
          if(readyQ.front().arrivalT == time){
              if(!cpu_idle) readyQ.push_back(running);
              running = readyQ.front(); readyQ.pop_front();
-             tq=10;
+             tq=100;
              if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
              //cout<<"At " << time<< " process " <<running.p_id<<" interrupt."<<endl;
@@ -57,7 +57,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
                  if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
              }
-             tq=10;
+             tq=100;
             }
         if (!cpu_idle) {
             --running.cpuList.front();
