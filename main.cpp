@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 
 	if (SRTN) {
 		load_file(totalJobs,processes,verbose);
-		// srtn(processes, totalJobs, verbose);
+		srtn(processes, totalJobs, verbose);
 		// if (detail_output) details(processes, totalJobs, "SRTN");
 		// 	else summary(processes, totalJobs, "SRTN");
 	}

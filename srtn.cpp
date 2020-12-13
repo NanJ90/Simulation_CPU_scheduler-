@@ -17,6 +17,7 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose) {
 	process running;
 
 	bool cpu_idle = true;
+	bool preempt = false;
 	
 	while (complete < totalJobs) {
 
@@ -24,19 +25,51 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose) {
 
 		while (!processes.empty()) {
 		    if (processes.front().arrivalT <= time) {
-		        temp = processes.front(); 
-		        temp.cpu_burst = temp.cpuList.front(); // delta from fcfs               
+		        temp = processes.front();              
 		        readyQ.push_back(temp);
 		        if (verbose) cout << "Time " << time << ": Process "
 		            << temp.p_id << ": arrived -> readyQ.\n";
 		        processes.pop_front();
+		        preempt = true; // delta from sjf
 		        continue;
 		    } else break;
 		} // above loop: push processes into ready queue from new arriving processes
 
+
+
+		if (preempt == true) { // delta from sjf
+
+			if (cpu_idle) {
+				if (!readyQ.empty()) { 
+					readyQ.sort(comp_by_cpu_remain); // delta from sjf    
+					running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
+					if (verbose) cout << "Time " << time << ": Process "
+						<< running.p_id << ": readyQ -> running.\n";
+					cpu_idle = false;
+				} // else readyQ is empty 
+				else idle++; 
+			} // if cpu_idle 
+
+			else { // if preempt and cpu not idle:
+				if (!readyQ.empty()) { 
+					readyQ.push_front(running); // delta from sjf
+					if (verbose) cout << "Time " << time << ": Process "
+						<< running.p_id << ": running -> readyQ. Preemption attempt.\n";					
+					readyQ.sort(comp_by_cpu_remain); // delta from sjf    
+					running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
+					if (verbose) cout << "Time " << time << ": Process "
+						<< running.p_id << ": readyQ -> running.\n";
+					cpu_idle = false;
+			  	}
+			}
+			preempt == false;
+		} // if (preempt == true)
+
+		else // if no preemption request same as sjf 
+
 		if (cpu_idle) {
 		  if (!readyQ.empty()) { 
-		  	readyQ.sort(comp_by_cpu_burst); // delta from fcfs    
+		  	readyQ.sort(comp_by_cpu_remain); // delta from sjf    
 		    running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
 		    if (verbose) cout << "Time " << time << ": Process "
 		    	<< running.p_id << ": readyQ -> running.\n";
@@ -64,8 +97,7 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose) {
 					if (verbose) cout << "Time " << time 
 						<< ": Process " << running.p_id 
 						<< ": running -> waitQ.\n";
-					running.cpu_burst = running.cpuList.front(); // delta from fcfs 
-					waitQ.push_back(running);					
+					waitQ.push_back(running); 					
 				}
 			} // if (running.cpuList.front() == 0) 
 		}// if (!cpu_idle)
@@ -81,6 +113,7 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose) {
 				waitQ.pop_front();
 				temp.ioList.pop_front();
 				readyQ.push_back(temp);
+				preempt = true; // delta from sjf
 				continue;
 			} else break;
 		} // above loop: push processes from waitQ -> readyQ
