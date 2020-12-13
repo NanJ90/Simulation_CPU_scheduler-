@@ -173,7 +173,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
 
     int time = 0, complete = 0, idle =0;
     int tq = 10;
-
+    int counter = 0;
     list <process> :: iterator it;
     processes.sort();
     process temp;
@@ -195,25 +195,31 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
         if (cpu_idle) {
           if (!readyQ.empty()) {
             running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready
+            tq=10;
             if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
             cpu_idle = false;
           }
-          //else idle++;
+          else idle++;
         } // if cpu_idle
          if(readyQ.front().arrivalT == time){
              if(!cpu_idle) readyQ.push_back(running);
              running = readyQ.front(); readyQ.pop_front();
+             tq=10;
              cout<<"At " << time<< " process " <<running.p_id<<" interrupt."<<endl;
              continue;
          }
          if(tq==0){
-             readyQ.push_back(running);
-             running = readyQ.front(); readyQ.pop_front();
+             if(!readyQ.empty()){
+                 readyQ.push_back(running);
+                 running = readyQ.front(); readyQ.pop_front();
+             }
+             tq=10;
          }
         time++;
         if (!cpu_idle) {
             --running.cpuList.front();
+            --tq;
             if (running.cpuList.front() == 0) {
                 cpu_idle = true;
                 if (verbose) cout << "\nTime " << time
@@ -233,6 +239,21 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
                 }
             } // if (running.cpuList.front() == 0)
         }
+        waitQ.sort(comp_by_io_remain);
+
+         
+         while (!waitQ.empty()) {
+             if (waitQ.front().ioList.front() == 0) {
+                 if (verbose) cout << "Time " << time
+                     << ": Process " << waitQ.front().p_id
+                     << ": waitQ -> readyQ.\n";
+                 temp = waitQ.front();
+                 waitQ.pop_front();
+                 temp.ioList.pop_front();
+                 readyQ.push_back(temp);
+                 continue;
+             } else break;
+         } // above loop: push processes from waitQ -> readyQ
     }
     // if (!cpu_idle)
 
