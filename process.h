@@ -32,5 +32,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose);
 // sjf.cpp
 void sjf(list<process>& processes, int& totalJobs, bool verbose);
 // rr.cpp
+void srtn(list<process>& processes, int& totalJobs, bool verbose);
+// rr.cpp
 void rr(list<process>& processes, int& totalJobs, bool verbose);
 
