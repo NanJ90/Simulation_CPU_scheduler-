@@ -39,16 +39,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose){
           }
           else idle++;
         } // if cpu_idle
-         if(readyQ.front().arrivalT == time){
-             if(!cpu_idle) readyQ.push_back(running);
-             running = readyQ.front(); readyQ.pop_front();
-             tq=100;
-             if (verbose) cout << "Time " << time << ": Process "
-                << running.p_id << ": readyQ -> running.\n";
-             //cout<<"At " << time<< " process " <<running.p_id<<" interrupt."<<endl;
-             //continue;
-         }
-
+        
         time++;
         if(tq==0){
              if(!readyQ.empty()){
