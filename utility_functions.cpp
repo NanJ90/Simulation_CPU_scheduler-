@@ -23,7 +23,7 @@ void load_file(int& totalJobs,list<process>& processes, bool verbose) {
     int id, arrival, numbers=0;
     int overheads; 
     ifstream infile;
-    infile.open("exampleData.txt");
+    infile.open("processData.txt");
 
     infile >> totalJobs >> overheads;
     if (verbose) cout << "Number of processes and overheads " << totalJobs << " " << overheads << endl;
@@ -104,7 +104,7 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
        // if all false, assume user is unfamiliar
        // and want to see all output
    }
-   
+
 }
 
 void summary(int time, int idle){
