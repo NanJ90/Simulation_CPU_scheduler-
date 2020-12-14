@@ -1,7 +1,7 @@
 # Simulation_CPU_scheduler-
 
 How To Use CPU Scheduling Program
-
+/n
 
 Compile (in terminal):
 
