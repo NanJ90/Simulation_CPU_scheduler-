@@ -5,6 +5,9 @@
 /*-------RR---------*/
 void rr(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,bool detail,int tq){
     
+    int switching_costs;
+	if (sc_version) switching_costs = 5;	
+
     list<process> readyQ, waitQ, finished;
 
     int time = 0, complete = 0, idle =0;
@@ -30,6 +33,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,
         } // above loop: push processes into ready queue from new arriving processes
         if (cpu_idle) {
           if (!readyQ.empty()) {
+          	if (sc_version) if (running.p_id != readyQ.front().p_id) switching_costs = 5; // v2 
             running = readyQ.front(); readyQ.pop_front(); //if idle and a process is ready
             timeQ = tq;
             if (verbose) cout << "Time " << time << ": Process "
@@ -43,15 +47,20 @@ void rr(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,
         if(timeQ==0){
              if(!readyQ.empty()){
                  readyQ.push_back(running);
+                 if (sc_version) if (running.p_id != readyQ.front().p_id) switching_costs = 5; // v2
                  running = readyQ.front(); readyQ.pop_front();
                  if (verbose) cout << "Time " << time << ": Process "
                 << running.p_id << ": readyQ -> running.\n";
              }
              timeQ = tq;
             }
-        if (!cpu_idle) {
+        if (!cpu_idle) { 
+        	if (switching_costs && sc_version) { // v2
+				switching_costs--;
+			} else {
             --running.cpuList.front();
             --timeQ;
+        	}
             if (running.cpuList.front() == 0) {
                 cpu_idle = true;
                 if (verbose) cout << "\nTime " << time

@@ -5,6 +5,9 @@
 /*------STRN*--------*/
 void srtn(list<process>& processes, int& totalJobs, bool verbose,bool sc_version, bool detail) {
 
+	int switching_costs;
+	if (sc_version) switching_costs = 5;	
+
 	list<process> readyQ, waitQ, finished;
 
 	int time = 0, complete = 0, idle = 0;
@@ -39,7 +42,8 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose,bool sc_version
 
 			if (cpu_idle) {
 				if (!readyQ.empty()) { 
-					readyQ.sort(comp_by_cpu_remain); // delta from sjf    
+					readyQ.sort(comp_by_cpu_remain); // delta from sjf   
+					if (sc_version) if (running.p_id != readyQ.front().p_id) switching_costs = 5; // v2 
 					running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
 					if (verbose) cout << "Time " << time << ": Process "
 						<< running.p_id << ": readyQ -> running.\n";
@@ -67,7 +71,8 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose,bool sc_version
 
 		if (cpu_idle) {
 		  if (!readyQ.empty()) { 
-		  	readyQ.sort(comp_by_cpu_remain); // delta from sjf    
+		  	readyQ.sort(comp_by_cpu_remain); // delta from sjf 
+		  	if (sc_version) if (running.p_id != readyQ.front().p_id) switching_costs = 5; // v2    
 		    running = readyQ.front();readyQ.pop_front(); //if idle and a process is ready 
 		    if (verbose) cout << "Time " << time << ": Process "
 		    	<< running.p_id << ": readyQ -> running.\n";
@@ -79,6 +84,9 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose,bool sc_version
         time++;
 
 		if (!cpu_idle) {
+			if (switching_costs && sc_version) { // v2
+				switching_costs--;
+			} else
 			--running.cpuList.front();//no interrupt, current process burst decreasing;
 			if (running.cpuList.front() == 0) {
 				cpu_idle = true;
