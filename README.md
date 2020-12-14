@@ -3,23 +3,23 @@
 How To Use CPU Scheduling Program
 
 
-Compile (in terminal):
+**Compile (in terminal):**
 
 make
 
 
-Execute (in terminal):
+**Execute (in terminal):**
 
 ./sim
 
 
-Execute Using Flags:
-'''
-./sim -d	(Detailed Information Mode)
+**Execute Using Flags:*
 
-./sim -v	(Verbose Mode)
+>./sim -d	(Detailed Information Mode)
 
-./sim -x	(Enable 5s Overhead Switch)
+>./sim -v	(Verbose Mode)
+
+>./sim -x	(Enable 5s Overhead Switch)
 
 ./sim fcfs	(First Come First Serve)
 
@@ -32,7 +32,7 @@ Execute Using Flags:
 ./sim rr50	(Round Robin W/ Quantum = 50)
 
 ./sim rr100	(Round Robin W/ Quantum = 100)
-'''
+
 
 -d, -v, and/or -x can be used in combination
 
