@@ -104,6 +104,7 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
        // if all false, assume user is unfamiliar
        // and want to see all output
    }
+   
 }
 
 void summary(int time, int idle){
