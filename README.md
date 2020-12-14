@@ -5,12 +5,12 @@ How To Use CPU Scheduling Program
 
 **Compile (in terminal):**
 
-make
+>make
 
 
 **Execute (in terminal):**
 
-./sim
+>./sim
 
 
 **Execute Using Flags:*
@@ -21,17 +21,17 @@ make
 
 >./sim -x	(Enable 5s Overhead Switch)
 
-./sim fcfs	(First Come First Serve)
+>./sim fcfs	(First Come First Serve)
 
-./sim sjf	(Shortest Job First)
+>./sim sjf	(Shortest Job First)
 
-./sim srtn	(Shortest Remaining Time Next)
+>./sim srtn	(Shortest Remaining Time Next)
 
-./sim rr10	(Round Robin W/ Quantum = 10)
+>./sim rr10	(Round Robin W/ Quantum = 10)
 
-./sim rr50	(Round Robin W/ Quantum = 50)
+>./sim rr50	(Round Robin W/ Quantum = 50)
 
-./sim rr100	(Round Robin W/ Quantum = 100)
+>./sim rr100	(Round Robin W/ Quantum = 100)
 
 
 -d, -v, and/or -x can be used in combination
