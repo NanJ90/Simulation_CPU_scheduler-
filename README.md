@@ -13,7 +13,7 @@ How To Use CPU Scheduling Program
 >./sim
 
 
-**Execute Using Flags:*
+**Execute Using Flags:**
 
 >./sim -d	(Detailed Information Mode)
 
