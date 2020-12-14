@@ -3,12 +3,10 @@
 #include "process.h"
 
 /*------FCFS*--------*/
-void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_version) { 
+void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,bool detail) { 
 
 	int switching_costs;
 	if (sc_version) switching_costs = 5;
-
-	string algName = "First come first serve";
 
 	list<process> readyQ, waitQ, finished;
 
@@ -65,6 +63,7 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_versio
 					if (verbose) cout << "Time " << time 
 						<< ": Process " << running.p_id 
 						<< ": is complete.\n";
+					running.finishT = time;
 					finished.push_back(running); complete++;
 				} else {
 					if (verbose) cout << "Time " << time 
@@ -90,7 +89,8 @@ void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_versio
 				readyQ.push_back(temp);
 				continue;
 			} else break;
-		} // above loop: push processes from waitQ -> readyQ
-	 
+		} // above loop: push processes from waitQ -> readyQ	 
     } // end of top while loop
+    if(detail) details(finished,totalJobs);
+    summary(time,idle);
 } // end of fcfs

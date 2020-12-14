@@ -3,12 +3,10 @@
 #include "process.h"
 
 /*------SJF*--------*/
-void sjf(list<process>& processes, int& totalJobs, bool verbose, bool sc_version) {
+void sjf(list<process>& processes, int& totalJobs, bool verbose, bool sc_version, bool detail) {
 
 	int switching_costs;
 	if (sc_version) switching_costs = 5;
-
-	string algName = "shortest job first";
 
 	list<process> readyQ, waitQ, finished;
 
@@ -66,6 +64,7 @@ void sjf(list<process>& processes, int& totalJobs, bool verbose, bool sc_version
 					if (verbose) cout << "Time " << time 
 						<< ": Process " << running.p_id 
 						<< ": is complete.\n";
+					running.finishT = time;
 					finished.push_back(running); complete++;
 				} else {
 					if (verbose) cout << "Time " << time 
@@ -93,4 +92,6 @@ void sjf(list<process>& processes, int& totalJobs, bool verbose, bool sc_version
 		} // above loop: push processes from waitQ -> readyQ
 	 
     } // end of top while loop
+    if(detail) details(finished,totalJobs);
+    summary(time,idle);
 } // end of sjf

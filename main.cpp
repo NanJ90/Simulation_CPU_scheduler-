@@ -45,7 +45,7 @@ const string stauts[] = { "new", "read","wait","run","execute" }; // 0 1 2 3 4
 //    }
 //    return 0;
 //};
-//void summary(string alg,int cur,int idle);
+
 //void fcfs(vector<process>, int);
 //void sjf(vector<process>, int);
 
@@ -69,42 +69,39 @@ int main(int argc, char** argv) {
     list<process> processes;
 
 	if (FCFS) {
+        cout<<"First come first serve"<<endl;
 		load_file(totalJobs,processes,verbose);
-		fcfs(processes, totalJobs, verbose, sc_version);
+		fcfs(processes, totalJobs, verbose, sc_version,detail_output);
 		// if (detail_output) details(processes, totalJobs, "FCFS");
 		// 	else summary(processes, totalJobs, "FCFS"); 
 	}
 
 	if (SJF) {
+        cout<<"Shortest job first"<<endl;
 		load_file(totalJobs,processes,verbose);
-		sjf(processes, totalJobs, verbose, sc_version);
+		sjf(processes, totalJobs, verbose, sc_version,detail_output);
 		// if (detail_output) details(processes, totalJobs, "SJF");
 		// 	else summary(processes, totalJobs, "SJF");
 	}
 
 	if (SRTN) {
+        cout<<"Shortest remaining time next"<<endl;
 		load_file(totalJobs,processes,verbose);
-		srtn(processes, totalJobs, verbose);
+		srtn(processes, totalJobs, verbose, detail_output);
 		// if (detail_output) details(processes, totalJobs, "SRTN");
 		// 	else summary(processes, totalJobs, "SRTN");
 	}
 
 	if (RR) {
+        cout<<"Round Robin with time quantum "<< tq<<endl;
 		load_file(totalJobs,processes,verbose);
-		rr(processes, totalJobs, verbose,tq);
+		rr(processes, totalJobs, verbose, detail_output,tq);
 		// if (detail_output) details(processes, totalJobs, "RR");
-		// 	else summary(processes, totalJobs, "RR");
 	}
     return 0;
 } // end of int main()
 
-//void summary(string alg,int current, int idletime){
-//    double cpuUtilization=0.0;
-//    cpuUtilization =static_cast<double>(current-idletime)/static_cast<double>(current)*100.0;
-//    cout<<alg<<endl;
-//    cout<<"Total time required is " << current << " time units"<<endl;
-//    cout<< "the cpu utilization is "<< (int)cpuUtilization<<"%"<<endl<<endl;
-//}
+
 
 ///*------SJF*--------*/
 //void sjf(vector<process>processes, int totalJobs){

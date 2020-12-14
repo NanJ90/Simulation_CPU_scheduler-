@@ -3,9 +3,8 @@
 #include "process.h"
 
 /*-------RR---------*/
-void rr(list<process>& processes, int& totalJobs, bool verbose,int tq){
-    string algName = "Round Robin";
-
+void rr(list<process>& processes, int& totalJobs, bool verbose, bool detail,int tq){
+    
     list<process> readyQ, waitQ, finished;
 
     int time = 0, complete = 0, idle =0;
@@ -63,6 +62,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose,int tq){
                     if (verbose) cout << "Time " << time
                         << ": Process " << running.p_id
                         << ": is complete.\n";
+                    running.finishT = time;
                     finished.push_back(running); complete++;
                 } else {
                     if (verbose) cout << "Time " << time
@@ -87,7 +87,7 @@ void rr(list<process>& processes, int& totalJobs, bool verbose,int tq){
                  continue;
              } else break;
          } // above loop: push processes from waitQ -> readyQ
-    }
-    // if (!cpu_idle)
-
+    }//end outer while loop
+    if(detail) details(finished,totalJobs);
+    summary(time,idle);
 }

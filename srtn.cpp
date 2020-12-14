@@ -3,9 +3,7 @@
 #include "process.h"
 
 /*------STRN*--------*/
-void srtn(list<process>& processes, int& totalJobs, bool verbose) {
-
-	string algName = "Shortest Remaining Time Next";
+void srtn(list<process>& processes, int& totalJobs, bool verbose, bool detail) {
 
 	list<process> readyQ, waitQ, finished;
 
@@ -92,6 +90,7 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose) {
 					if (verbose) cout << "Time " << time 
 						<< ": Process " << running.p_id 
 						<< ": is complete.\n";
+					running.finishT = time;
 					finished.push_back(running); complete++;
 				} else {
 					if (verbose) cout << "Time " << time 
@@ -119,4 +118,6 @@ void srtn(list<process>& processes, int& totalJobs, bool verbose) {
 		} // above loop: push processes from waitQ -> readyQ
 	 
     } // end of top while loop
+    if(detail) details(finished,totalJobs);
+    summary(time,idle);
 } // end of sjf
