@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
 	if (SRTN) {
         cout<<"Shortest remaining time next"<<endl;
 		load_file(totalJobs,processes,verbose);
-		srtn(processes, totalJobs, verbose, detail_output);
+		srtn(processes, totalJobs, verbose,sc_version, detail_output);
 		// if (detail_output) details(processes, totalJobs, "SRTN");
 		// 	else summary(processes, totalJobs, "SRTN");
 	}
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 	if (RR) {
         cout<<"Round Robin with time quantum "<< tq<<endl;
 		load_file(totalJobs,processes,verbose);
-		rr(processes, totalJobs, verbose, detail_output,tq);
+		rr(processes, totalJobs, verbose,sc_version, detail_output,tq);
 		// if (detail_output) details(processes, totalJobs, "RR");
 	}
     return 0;

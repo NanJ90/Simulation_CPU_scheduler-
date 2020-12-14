@@ -34,9 +34,9 @@ void details(list<process> fin,int total);
 // sjf.cpp
 void sjf(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,bool detail);
 // rr.cpp
-void srtn(list<process>& processes, int& totalJobs, bool verbose, bool detail);
+void srtn(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,bool detail);
 // rr.cpp
-void rr(list<process>& processes, int& totalJobs, bool verbose, bool detail,int tq);
+void rr(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,bool detail,int tq);
 // fcfs.cpp
 void fcfs(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,bool detail);
 

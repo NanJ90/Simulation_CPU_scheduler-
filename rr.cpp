@@ -3,7 +3,7 @@
 #include "process.h"
 
 /*-------RR---------*/
-void rr(list<process>& processes, int& totalJobs, bool verbose, bool detail,int tq){
+void rr(list<process>& processes, int& totalJobs, bool verbose, bool sc_version,bool detail,int tq){
     
     list<process> readyQ, waitQ, finished;
 

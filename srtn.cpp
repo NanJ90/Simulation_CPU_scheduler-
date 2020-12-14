@@ -3,7 +3,7 @@
 #include "process.h"
 
 /*------STRN*--------*/
-void srtn(list<process>& processes, int& totalJobs, bool verbose, bool detail) {
+void srtn(list<process>& processes, int& totalJobs, bool verbose,bool sc_version, bool detail) {
 
 	list<process> readyQ, waitQ, finished;
 

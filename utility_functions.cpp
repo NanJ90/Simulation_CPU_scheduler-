@@ -96,10 +96,11 @@ void check_arguments(bool& v, bool& d, int argc, char** argv,
        SRTN == false &&
        RR == false
        ) {
-       FCFS = false;
-       SJF = false;
-       SRTN = false;
+       FCFS = true;
+       SJF = true;
+       SRTN = true;
        RR = true;
+       tq = 10;
        // if all false, assume user is unfamiliar
        // and want to see all output
    }
