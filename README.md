@@ -1,7 +1,7 @@
 # Simulation_CPU_scheduler-
 
 How To Use CPU Scheduling Program
-/n
+
 
 Compile (in terminal):
 
@@ -14,7 +14,7 @@ Execute (in terminal):
 
 
 Execute Using Flags:
-
+'''
 ./sim -d	(Detailed Information Mode)
 
 ./sim -v	(Verbose Mode)
@@ -32,7 +32,7 @@ Execute Using Flags:
 ./sim rr50	(Round Robin W/ Quantum = 50)
 
 ./sim rr100	(Round Robin W/ Quantum = 100)
-
+'''
 
 -d, -v, and/or -x can be used in combination
 
